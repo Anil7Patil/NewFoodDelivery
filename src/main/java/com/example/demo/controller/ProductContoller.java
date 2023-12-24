@@ -1,5 +1,5 @@
 package com.example.demo.controller;
 
-public interface ProductContoller {
+public class ProductContoller {
 
 }
