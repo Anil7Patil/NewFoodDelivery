@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 public class Order {
 	
 	private int id;
+	private double orderiId;
 	private Date OrderDateTime;
 	private Date DeliveryDateTime;
 	private double totalPrise;
