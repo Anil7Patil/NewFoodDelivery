@@ -26,6 +26,9 @@ public class User {
 	@Column(name="Address")
 	private String address;
 	
+	@Column(name="mobile")
+	private String mobile;
+	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
 	
@@ -69,6 +72,13 @@ public class User {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	
 	
 	
 	

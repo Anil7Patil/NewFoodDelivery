@@ -25,7 +25,7 @@ public class Order {
     private int id;
 	
 	@Column(name="OrderId")
-	private double orderiId;
+	private String orderiId;
 	
 	@Column(name="OrderDateTime")
 	private  LocalDateTime orderDateTime;
@@ -42,19 +42,13 @@ public class Order {
 	@ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-	
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products;
-	
+
+	@Column(name="productName")
+	private String productName;
 	
 	  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	    private payment payment;
-	public List<Product> getProducts() {
-		return products;
-	}
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
+	
 	
 	public User getUser() {
 		return user;
@@ -68,10 +62,10 @@ public class Order {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public double getOrderiId() {
+	public String getOrderiId() {
 		return orderiId;
 	}
-	public void setOrderiId(double orderiId) {
+	public void setOrderiId(String orderiId) {
 		this.orderiId = orderiId;
 	}
 	
@@ -109,6 +103,13 @@ public class Order {
 	public LocalDateTime getDeliveryDateTime() {
 		return deliveryDateTime;
 	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	
 	
 	
 

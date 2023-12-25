@@ -8,8 +8,7 @@ import com.example.demo.Entity.User;
 
 public interface OrderService {
 	
-	String createOrder(Order order, User user);
-
+	
     List<Order> getAllOrders();
 
     List<Order> getOrdersByUser(User user);
@@ -23,6 +22,10 @@ public interface OrderService {
     void addProductToOrder(int orderId, Product product);
 
 	void removeProductFromOrder(int orderId, Product product);
+
+	
+
+	String createOrder(int userId, List<Integer> productIds);
 	
 
 }

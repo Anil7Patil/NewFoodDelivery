@@ -26,7 +26,7 @@ public class ProductImpl implements ProductService{
         Order order =orderRepository.findById(orderId).orElse(null);
 
         if (order != null) {
-            product.setOrder((com.example.demo.Entity.Order) order);
+           
             return productRepository.save(product);
         }
 

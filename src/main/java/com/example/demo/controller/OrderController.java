@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.Entity.Order;
 import com.example.demo.Entity.Product;
 import com.example.demo.Entity.User;
+import com.example.demo.dto.CreateOrderRequest;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.service.OrderService;
 
@@ -24,14 +25,14 @@ public class OrderController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<String> createOrder(@RequestBody Order order, @RequestParam int userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public ResponseEntity<String> createOrder(@RequestBody CreateOrderRequest request) {
+        User user = userRepository.findById(request.getUserId()).orElse(null);
 
         if (user == null) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
 
-        String result = orderService.createOrder(order, user);
+        String result = orderService.createOrder(request.getUserId(), request.getProductIds());
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 

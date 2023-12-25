@@ -20,7 +20,14 @@ public class UserImpl implements UserService{
 	 @Override
 	    public String userRegistration(User user) {
 	        // Assuming User entity has a constructor that takes necessary parameters
-	        userRepository.save(user);
+	  
+		 user.setName(user.getName());
+	    user.setPassword(user.getPassword());
+	     user.setMobile(user.getMobile());
+	   user.setAddress(user.getAddress());
+	    user.setEmail( user.getEmail());
+	   
+		 userRepository.save(user);
 	        return "User registered successfully!";
 	    }
 	 
@@ -50,7 +57,9 @@ public class UserImpl implements UserService{
 	            existingUser.setName(updatedUser.getName());
 	            existingUser.setAddress(updatedUser.getAddress());
 	            existingUser.setPassword(updatedUser.getPassword());
-	            // ... other fields
+	            existingUser.setMobile(updatedUser.getMobile());
+	      //      existingUser.setAddress(user.getAddress());
+	            existingUser.setEmail( updatedUser.getEmail());
 
 	            userRepository.save(existingUser);
 	            return "User updated successfully!";

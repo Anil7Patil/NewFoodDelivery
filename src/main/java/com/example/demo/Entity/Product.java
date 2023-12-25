@@ -25,17 +25,9 @@ public class Product {
 	@Column(name="Details")
 	private String productDetails;
 	
-	@ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
 	
 	
-	public Order getOrder() {
-		return order;
-	}
-	public void setOrder(Order order) {
-		this.order = order;
-	}
+	
 	public int getId() {
 		return id;
 	}
