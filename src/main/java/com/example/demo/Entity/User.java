@@ -1,15 +1,22 @@
 package com.example.demo.Entity;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 @Entity
 @Table(name="user")
 public class User {
 	
 	@Id
-	private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 	@Column(name="Name")
 	private String name;
 	@Column(name="Email")
@@ -18,6 +25,16 @@ public class User {
 	private String password;
 	@Column(name="Address")
 	private String address;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+	
+	public List<Order> getOrders() {
+		return orders;
+	}
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
 	public int getId() {
 		return id;
 	}
@@ -47,6 +64,10 @@ public class User {
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public User orElse(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
