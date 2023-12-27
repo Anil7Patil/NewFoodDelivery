@@ -5,13 +5,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.Entity.Order;
+
+import com.example.demo.Entity.Orders;
 import com.example.demo.Entity.Product;
 import com.example.demo.Entity.User;
 import com.example.demo.dto.CreateOrderRequest;
+import com.example.demo.dto.UpdatedOrderDto;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.OrderRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.service.OrderService;
-
 import java.util.List;
 
 @RestController
@@ -22,41 +25,40 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private UserRepo userRepository;
+    @Autowired
+    private OrderRepo orderRepository;
 
 
     @PostMapping("/create")
     public ResponseEntity<String> createOrder(@RequestBody CreateOrderRequest request) {
-        User user = userRepository.findById(request.getUserId()).orElse(null);
-
-        if (user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
+     
+        userRepository.findById(request.getUserId()).orElseThrow(()->new ResourceNotFoundException("order controller","id",request.getUserId())) ;
         String result = orderService.createOrder(request.getUserId(), request.getProductIds());
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    public ResponseEntity<List<Orders>> getAllOrders() {
+    //	System.out.println("-)))))))))))))))))))))))----000000000000-----------)))))))))----000000000");
+        List<Orders> o=orderRepository.findAll();
+        return new ResponseEntity<>(o,HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/byUser")
-    public ResponseEntity<List<Order>> getOrdersByUser(@RequestParam Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user == null) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Orders>> getOrdersByUser(@PathVariable int userId) {
+       User user = userRepository.findById(userId).orElse(null);
+    	System.out.println("_____________________000000000000__________)))))))0000000000_________00000");
+    	
+       if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        List<Order> orders = orderService.getOrdersByUser(user);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+       List<Orders> userOrders = orderRepository.findByUserId(userId);
+        return new ResponseEntity<>(userOrders, HttpStatus.OK);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable int orderId) {
-        Order order = orderService.getOrderById(orderId);
+    public ResponseEntity<Orders> getOrderById(@PathVariable int orderId) {
+        Orders order = orderRepository.findById(orderId);
 
         if (order == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -66,22 +68,22 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> deleteOrderById(@PathVariable int orderId) {
-        Order order = orderService.getOrderById(orderId);
+    public ResponseEntity<String> deleteOrderById(@PathVariable int orderId) {
+    	 Orders order = orderRepository.findById(orderId);
 
-        if (order == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        orderService.deleteOrderById(orderId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+         if (order == null) {
+             return new ResponseEntity<>("order id not found plese check it",HttpStatus.NOT_FOUND);
+         }
+         orderRepository.deleteById(orderId);
+         return new ResponseEntity<>("Delete Successfully", HttpStatus.OK);
+    	
     }
 
-    @PutMapping("/{orderId}")
-    public ResponseEntity<String> updateOrder(@PathVariable int orderId, @RequestBody Order updatedOrder) {
-        updatedOrder.setId(orderId); // Make sure the ID is set for the updated order
+    @PutMapping("/update")
+    public ResponseEntity<String> updateOrder(@RequestParam("orderId") String orderId, @RequestBody UpdatedOrderDto updatedOrderDto) {
+       
 
-        String result = orderService.updateOrder(updatedOrder);
+        String result = orderService.updateOrder(orderId, updatedOrderDto);
 
         if (result.equals("Order not found")) {
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
@@ -90,15 +92,6 @@ public class OrderController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/{orderId}/addProduct")
-    public ResponseEntity<Void> addProductToOrder(@PathVariable int orderId, @RequestBody Product product) {
-        orderService.addProductToOrder(orderId, product);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/{orderId}/removeProduct")
-    public ResponseEntity<Void> removeProductFromOrder(@PathVariable int orderId, @RequestBody Product product) {
-        orderService.removeProductFromOrder(orderId, product);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+   
+   
 }

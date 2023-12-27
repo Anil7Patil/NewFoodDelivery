@@ -5,13 +5,13 @@ import java.util.List;
 import com.example.demo.Entity.Product;
 
 public interface ProductService {
-	Product addProductToOrder(Product product, int orderId);
-
-    void removeProductFromOrder(int productId);
-
-    List<Product> getAllProducts();
-
-    Product getProductById(int productId);
+	
+	
+	String addProduct(Product p);
+	String deleteProduct(int id);
+	String updateProduct(int id,Product p);
+	List<Product>allProduct();
+	
 
 
 }

@@ -2,15 +2,16 @@ package com.example.demo.seiviceImpl;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Entity.Product;
-import com.example.demo.repository.OrderRepo;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ProductRepo;
 import com.example.demo.service.ProductService;
 
-import jakarta.persistence.criteria.Order;
+
 
 @Service
 public class ProductImpl implements ProductService{
@@ -18,33 +19,37 @@ public class ProductImpl implements ProductService{
 	@Autowired
     private ProductRepo productRepository;
 
-    @Autowired
-    private OrderRepo orderRepository;
+   
 
-    @Override
-    public Product addProductToOrder(Product product, int orderId) {
-        Order order =orderRepository.findById(orderId).orElse(null);
+	@Override
+	public String addProduct(Product p) {
+		 productRepository.save(p);
+		return "Product added successfyly";
+	}
 
-        if (order != null) {
-           
-            return productRepository.save(product);
-        }
+	@Override
+	public String deleteProduct(int id) {
+		this.productRepository.findById(id)
+				.orElseThrow(()->new ResourceNotFoundException("Product","id",id)) ;
+		 productRepository.deleteById(id);
+		return "Product delete successfyly";
+	}
 
-        return null;
-    }
+	@Override
+	public String updateProduct(int id, Product p) {
+		Product product=productRepository.findById(id).orElse(null);
+		product.setPrise(p.getPrise());
+		product.setProductDetails(p.getProductDetails());
+		product.setProductName(p.getProductName());
+		
+		productRepository.save(product);
+		return "Product update successfyly";
+	}
 
-    @Override
-    public void removeProductFromOrder(int productId) {
-        productRepository.deleteById(productId);
-    }
+	@Override
+	public List<Product> allProduct() {
+		return productRepository.findAll();
+	}
 
-    @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    @Override
-    public Product getProductById(int productId) {
-        return productRepository.findById(productId).orElse(null);
-    }
+   
 }

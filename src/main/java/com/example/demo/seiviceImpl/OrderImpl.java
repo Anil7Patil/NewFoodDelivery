@@ -7,15 +7,18 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Entity.Order;
+import com.example.demo.Entity.Orders;
 import com.example.demo.Entity.Product;
 import com.example.demo.Entity.User;
+import com.example.demo.dto.UpdatedOrderDto;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.OrderRepo;
 import com.example.demo.repository.ProductRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.service.OrderService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Order;
 
 @Service
 public class OrderImpl implements OrderService{
@@ -30,60 +33,17 @@ public class OrderImpl implements OrderService{
 	 @Autowired
 	    private ProductRepo productRepository;
 	 
-	
-	  
+		  
 	    @Override
-	    public List<Order> getAllOrders() {
+	    public List<Orders> getAllOrders() {
 	        return orderRepository.findAll();
 	    }
 
-	    @Override
-	    public List<Order> getOrdersByUser(User user) {
-	        return orderRepository.findByUser(user);
-	    }
-
-	    @Override
-	    public Order getOrderById(int orderId) {
-	        return (Order) orderRepository.findById(orderId).orElse(null);
-	    }
-
-	    @Override
-	    public void deleteOrderById(int orderId) {
-	        orderRepository.deleteById(orderId);
-	    }
-
-	    @Override
-	    public String updateOrder(Order updatedOrder) {
-	        // Additional logic and validation...
-	        orderRepository.save(updatedOrder);
-	        return "Order updated successfully!";
-	    }
-
-	    @Override
-	    public void addProductToOrder(int orderId, Product product) {
-	        Order order = getOrderById(orderId);
-	        if (order != null) {
-	            // Additional logic and validation...
-	          
-	            orderRepository.save(order);
-	        }
-	    }
-
-	    @Override
-	    public void removeProductFromOrder(int orderId, Product product) {
-	        Order order = getOrderById(orderId);
-	        if (order != null) {
-	            // Additional logic and validation...
-	         
-	            orderRepository.save(order);
-	        }
-	    }
 
 	    @Override
 	    public String createOrder(int userId, List<Integer> productIds) {
-	        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-	        Order order = new Order();
+	        User user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("Order","id",userId)) ;
+	        Orders order = new Orders();
 	       order.setUser(user);
 	        order.setOrderDateTime(LocalDateTime.now());
 	        order.setDeliveryDateTime(LocalDateTime.now().plusDays(2));
@@ -102,8 +62,8 @@ public class OrderImpl implements OrderService{
 	    private String addProductName(List<Integer> productIds) {
 	    	String pName="";
 	    	 for (Integer x : productIds) {
-	        	   Product p = productRepository.findById(x).orElseThrow(() -> new EntityNotFoundException("User not found"));
-	            pName += p.getProductName();
+	        	   Product p = productRepository.findById(x).orElseThrow(()->new ResourceNotFoundException("Order","id",x)) ;
+	       	    pName += p.getProductName();
 	        }
 	        return pName;
 		}
@@ -117,10 +77,32 @@ public class OrderImpl implements OrderService{
 	    	double totalPrice = 0.0;
 
 	        for (Integer x : productIds) {
-	        	   Product p = productRepository.findById(x).orElseThrow(() -> new EntityNotFoundException("User not found"));
-	            totalPrice += p.getPrise();
+	        	   Product p = productRepository.findById(x).orElseThrow(()->new ResourceNotFoundException("Order","id",x)) ;
+	 	       	   totalPrice += p.getPrise();
 	        }
 	        return totalPrice;
 	    }
-	       
+
+
+		@Override
+		public String updateOrder(String orderId, UpdatedOrderDto updatedOrderDto) {
+		Orders order=orderRepository.findByOrderiId(orderId);
+		if(order==null)
+		{
+			return "Order not found";
+		}
+		// Orders order = new Orders();
+		  order.setDeliveryDateTime(updatedOrderDto.getDeliveryDateTime());
+	        order.setTotalPrise(updatedOrderDto.getTotalPrise());
+	        order.setOrderStatus(updatedOrderDto.getOrderStatus());
+	       order.setProductName(updatedOrderDto.getProductName());
+	       orderRepository.save(order);
+		return "Order update successfully";
+		}
+
+
+
+
+
+		
 	}

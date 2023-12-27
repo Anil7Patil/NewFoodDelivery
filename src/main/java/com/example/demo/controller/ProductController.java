@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.Entity.Product;
+import com.example.demo.repository.ProductRepo;
 import com.example.demo.service.ProductService;
 
 import java.util.List;
@@ -16,10 +17,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+	private ProductRepo productRepository;
 
-    @PostMapping("/addToOrder/{orderId}")
-    public ResponseEntity<Product> addProductToOrder(@RequestBody Product product, @PathVariable int orderId) {
-        Product addedProduct = productService.addProductToOrder(product, orderId);
+    @PostMapping("/add")
+    public ResponseEntity<String> addProduct(@RequestBody Product product) {
+        String addedProduct = productService.addProduct(product);
 
         if (addedProduct != null) {
             return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
@@ -30,20 +33,20 @@ public class ProductController {
 
     @DeleteMapping("/remove/{productId}")
     public ResponseEntity<Void> removeProductFromOrder(@PathVariable int productId) {
-        productService.removeProductFromOrder(productId);
+        productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = productService.allProduct();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable int productId) {
-        Product product = productService.getProductById(productId);
-
+        @SuppressWarnings("deprecation")
+		Product product =productRepository.getById(productId);
         if (product != null) {
             return new ResponseEntity<>(product, HttpStatus.OK);
         }

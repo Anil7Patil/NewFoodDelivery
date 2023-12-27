@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,16 +18,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.Order;
 
 @Entity
 @Table(name="orders")
-public class Order {
+public class Orders {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 	
-	@Column(name="OrderId")
+	@Column(name="OxId")
 	private String orderiId;
 	
 	@Column(name="OrderDateTime")
@@ -38,17 +42,17 @@ public class Order {
 	
 	@Column(name="OrderStatus")
 	private String orderStatus;
-	
 	@ManyToOne
     @JoinColumn(name = "user_id")
+	 @JsonBackReference
     private User user;
 
 	@Column(name="productName")
 	private String productName;
 	
-	  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private payment payment;
-	
+//	  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private payment payment;
+//	
 	
 	public User getUser() {
 		return user;
@@ -85,12 +89,12 @@ public class Order {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public payment getPayment() {
-		return payment;
-	}
-	public void setPayment(payment payment) {
-		this.payment = payment;
-	}
+//	public payment getPayment() {
+//		return payment;
+//	}
+//	public void setPayment(payment payment) {
+//		this.payment = payment;
+//	}
 	public LocalDateTime getOrderDateTime() {
 		return orderDateTime;
 	}
@@ -109,7 +113,6 @@ public class Order {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	
 	
 	
 

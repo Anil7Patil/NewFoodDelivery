@@ -2,6 +2,8 @@ package com.example.demo.Entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,12 +32,13 @@ public class User {
 	private String mobile;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders;
+	 @JsonBackReference
+    private List<Orders> orders;
 	
-	public List<Order> getOrders() {
+	public List<Orders> getOrders() {
 		return orders;
 	}
-	public void setOrders(List<Order> orders) {
+	public void setOrders(List<Orders> orders) {
 		this.orders = orders;
 	}
 	public int getId() {

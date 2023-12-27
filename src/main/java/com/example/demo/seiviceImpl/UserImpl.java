@@ -19,13 +19,7 @@ public class UserImpl implements UserService{
 	
 	 @Override
 	    public String userRegistration(User user) {
-	        // Assuming User entity has a constructor that takes necessary parameters
-	  
-		 user.setName(user.getName());
-	    user.setPassword(user.getPassword());
-	     user.setMobile(user.getMobile());
-	   user.setAddress(user.getAddress());
-	    user.setEmail( user.getEmail());
+	        // Assuming User entity has a constructor that takes necessary parameter
 	   
 		 userRepository.save(user);
 	        return "User registered successfully!";

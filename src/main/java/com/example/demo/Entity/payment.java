@@ -20,9 +20,9 @@ public class payment {
 	private String email;
 	
 	
-	@OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+//	@OneToOne
+//    @JoinColumn(name = "order_id")
+//    private Orders order;
 	public int getId() {
 		return id;
 	}
