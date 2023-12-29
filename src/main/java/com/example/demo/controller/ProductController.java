@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.Entity.Product;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ProductRepo;
 import com.example.demo.service.ProductService;
 
@@ -45,8 +46,9 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable int productId) {
-        @SuppressWarnings("deprecation")
-		Product product =productRepository.getById(productId);
+     
+		Product product =productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("order controller","id",productId)) ;
+	       
         if (product != null) {
             return new ResponseEntity<>(product, HttpStatus.OK);
         }
